@@ -1,7 +1,8 @@
-from flask import Flask
+#this is just where
+from website import create_app
+print("running main.py")
+app = create_app()
 
-app = Flask(__name__)
+if __name__ == '__main__':
+     app.run(debug=True) #default port. owuld be on localhost:5000
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
