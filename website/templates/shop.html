@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Shop{% endblock %}
+
+{% block content %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+html,body{background-color:#eaf6ff}
+.shop-header-section{background-color:#551918;padding:1rem 0;margin-bottom:0}
+.shop-header-inner{max-width:1320px;margin:0 auto;padding:0 12px;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.shop-page-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:clamp(1.5rem,4vw,2rem);color:#fff;margin:0;letter-spacing:-.02em}
+.shop-cart-btn{border:2px solid #fff;color:#fff!important;font-weight:500;padding:.5rem 1.25rem;border-radius:.375rem;text-decoration:none;transition:background-color .2s ease,color .2s ease}
+.shop-cart-btn:hover{background-color:#fff;color:#551918!important}
+.home-products{padding-top:1.5rem;padding-bottom:2.5rem}
+.home-products-heading{font-family:'Poppins',sans-serif;font-weight:600;font-size:clamp(1.25rem,2.5vw,1.75rem);color:#033860;letter-spacing:-.02em;margin-bottom:1.25rem}
+.home-products .card{border:0;border-radius:0.75rem;background-color:#fff;box-shadow:0 2px 14px rgba(0,0,0,.07);transition:box-shadow .22s ease,transform .22s ease}
+.home-products .card:hover{box-shadow:0 10px 32px rgba(3,56,96,.14);transform:translateY(-5px)}
+.home-products .card-img-top{height:200px;object-fit:cover}
+.home-products .card-title{font-family:'Poppins',sans-serif;font-weight:600;color:#222;margin-bottom:.5rem}
+.home-products .card-text{color:#555;font-size:.95rem;line-height:1.5}
+.home-products .card-body .fw-bold{color:#033860;font-size:1.125rem;margin-bottom:.75rem}
+.home-products .btn-outline-dark{border-width:2px;border-color:#033860;color:#033860;font-weight:500;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
+.home-products .btn-outline-dark:hover{background-color:#033860;border-color:#033860;color:#fff}
+</style>
+
+<section class="shop-header-section" aria-label="Shop heading">
+    <div class="shop-header-inner">
+        <h1 class="shop-page-title">Shop</h1>
+        <a href="#" class="shop-cart-btn">Cart</a>
+    </div>
+</section>
+
+<section class="home-products">
+    <div class="row g-4">
+        <div class="col-12">
+            <h2 class="home-products-heading">All products</h2>
+        </div>
+        {% for product in products %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="{{ product.product_picture }}" class="card-img-top" alt="{{ product.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.product_name }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <p class="fw-bold">{{ product.current_price }}</p>
+                    <a href="#" class="btn btn-outline-dark">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
