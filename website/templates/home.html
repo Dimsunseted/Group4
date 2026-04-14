@@ -36,72 +36,23 @@ html,body{background-color:#eaf6ff}
     <div class="col-12">
         <h2 class="home-products-heading">Featured products</h2>
     </div>
+    {% for product in products %}
     <div class="col-md-4">
         <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/bananas.jpg') }}" class="card-img-top" alt="Bananas">
+            <img src="{{ url_for('static', filename='images/' + product.image) }}" class="card-img-top">
+
             <div class="card-body">
-                <h5 class="card-title">Bananas</h5>
-                <p class="card-text">Ripe yellow bananas, perfect for snacking, smoothies, or baking.</p>
-                <p class="fw-bold">$0.69 / lb</p>
-                <a href="#" class="btn btn-outline-dark">Add to Cart</a>
+                <h5 class="card-title">{{ product.title }}</h5>
+                <p class="card-text">{{ product.description }}</p>
+                <p class="fw-bold">{{ product.price }}</p>
+
+                <a href="/add-to-cart/{{ product.id }}" class="btn btn-outline-dark">
+                    Add to Cart
+                </a>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/eggs.jpg') }}" class="card-img-top" alt="Eggs">
-            <div class="card-body">
-                <h5 class="card-title">Large eggs (12 ct)</h5>
-                <p class="card-text">Grade A large eggs from local farms—great for breakfast and recipes.</p>
-                <p class="fw-bold">$4.49</p>
-                <a href="#" class="btn btn-outline-dark">Add to Cart</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/apple.jpg') }}" class="card-img-top" alt="Apples">
-            <div class="card-body">
-                <h5 class="card-title">Gala apples</h5>
-                <p class="card-text">Crisp, sweet Gala apples—ideal for lunchboxes, salads, or a fresh crunch.</p>
-                <p class="fw-bold">$1.99 / lb</p>
-                <a href="#" class="btn btn-outline-dark">Add to Cart</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/cream_cheese.jpg') }}" class="card-img-top" alt="Cream cheese">
-            <div class="card-body">
-                <h5 class="card-title">Cream cheese (8 oz)</h5>
-                <p class="card-text">Smooth, spreadable cream cheese—perfect on bagels, in dips, or for baking.</p>
-                <p class="fw-bold">$3.49</p>
-                <a href="#" class="btn btn-outline-dark">Add to Cart</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/sliced_bread.jpg') }}" class="card-img-top" alt="Sliced bread">
-            <div class="card-body">
-                <h5 class="card-title">Sliced white bread (1 loaf)</h5>
-                <p class="card-text">Soft sandwich bread, pre-sliced for toast, lunches, and everyday meals.</p>
-                <p class="fw-bold">$2.99</p>
-                <a href="#" class="btn btn-outline-dark">Add to Cart</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/velveeta_cheese.png') }}" class="card-img-top" alt="Velveeta cheese">
-            <div class="card-body">
-                <h5 class="card-title">Velveeta cheese (16 oz)</h5>
-                <p class="card-text">Melts smooth for mac and cheese, nachos, and hot dips—classic pantry staple.</p>
-                <p class="fw-bold">$5.99</p>
-                <a href="#" class="btn btn-outline-dark">Add to Cart</a>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 </section>
 {% endblock %}

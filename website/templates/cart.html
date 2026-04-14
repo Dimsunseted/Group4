@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %} Cart {% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row">
+        <h3 style="color: white;">
+            {{ current_user.username }}'s Cart
+        </h3>
+        <div class="col-sm-2 border-end" style="margin-top: 20px;">
+            <ul class="list-unstyled">
+                <li class="d-grid">
+                    <a href="/cartprofile/{{ current_user.id }}" class="btn btn-primary">Profile</a>
+                </li>
+                <li class="d-grid">
+                    <a href="/change-password/{{ current_user.id }}" class="btn btn-primary mt-2">Change Password</a>
+                </li>
+                <li class="d-grid">
+                    <a href="/cart" class="btn btn-secondary mt-2">Cart</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-8 offset-sm-1" style="background-color: white; border-radius: 18px; margin-top: 20px; padding: 20px;">
+            {% if cart_items %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.product.product_name }}</td>
+                            <td>${{ item.product.current_price }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.product.current_price * item.quantity }}</td>
+                            <td>
+                                <a href="/remove-from-cart/{{ item.id }}" class="btn btn-danger btn-sm">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="text-end">
+                    <h4>Total: ${{ total_price }}</h4>
+                    <a href="/checkout" class="btn btn-success mt-2">Checkout</a>
+                </div>
+            {% else %}
+                <div class="text-center">
+                    <h4>Your cart is empty</h4>
+                    <a href="/" class="btn btn-primary mt-3">Continue Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
