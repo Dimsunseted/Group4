@@ -10,9 +10,12 @@ from . import db
 admin = Blueprint('admin', __name__)
 
 
+import os
+
 @admin.route('/media/<path:filename>')
 def get_image(filename):
-    return send_from_directory('../media', filename)
+    media_path = os.path.join(os.getcwd(), 'media')
+    return send_from_directory(media_path, filename)
 
 
 @admin.route('/add-shop-items', methods=['GET', 'POST'])
@@ -30,20 +33,22 @@ def add_shop_items():
 
             file = form.product_picture.data
 
-            file_name = secure_filename(file.filename)
+            UPLOAD_FOLDER = os.path.join(os.getcwd(), 'media')
 
-            file_path = file_name
+            file_name = secure_filename(file.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, file_name)
 
             file.save(file_path)
 
             new_shop_item = Product()
+
             new_shop_item.product_name = product_name
             new_shop_item.current_price = current_price
             new_shop_item.previous_price = previous_price
             new_shop_item.in_stock = in_stock
             new_shop_item.flash_sale = flash_sale
 
-            new_shop_item.product_picture = file_path
+            new_shop_item.product_picture = file_name
 
             try:
                 db.session.add(new_shop_item)

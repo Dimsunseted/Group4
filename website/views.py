@@ -39,10 +39,11 @@ SHOP_PRODUCTS = [
 
 @views.route('/')
 def home():
-    products = SHOP_PRODUCTS[:6]
+    products = Product.query.limit(6).all()
     return render_template('home.html', products=products)
 
 
 @views.route('/shop')
 def shop():
-    return render_template('shop.html', products=SHOP_PRODUCTS)
+    products = Product.query.all()
+    return render_template('shop.html', products=products)
