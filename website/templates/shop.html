@@ -22,12 +22,14 @@ html,body{background-color:#eaf6ff}
 .home-products .btn-outline-dark{border-width:2px;border-color:#033860;color:#033860;font-weight:500;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
 .home-products .btn-outline-dark:hover{background-color:#033860;border-color:#033860;color:#fff}
 </style>
+
 <section class="shop-header-section" aria-label="Shop heading">
     <div class="shop-header-inner">
         <h1 class="shop-page-title">Shop</h1>
-        <a href="/cart" class="shop-cart-btn">Cart</a>
+        <a href="#" class="shop-cart-btn">Cart</a>
     </div>
 </section>
+
 <section class="home-products">
     <div class="row g-4">
         <div class="col-12">
@@ -36,14 +38,12 @@ html,body{background-color:#eaf6ff}
         {% for product in products %}
         <div class="col-md-4">
             <div class="card h-100">
-                <img src="{{ url_for('static', filename='images/' + product.image) }}" class="card-img-top">
+                <img src="{{ product.product_picture }}" class="card-img-top" alt="{{ product.title }}">
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.title }}</h5>
+                    <h5 class="card-title">{{ product.product_name }}</h5>
                     <p class="card-text">{{ product.description }}</p>
-                    <p class="fw-bold">{{ product.price }}</p>
-                    <a href="/add-to-cart/{{ product.id }}" class="btn btn-outline-dark">
-                        Add to Cart
-                    </a>
+                    <p class="fw-bold">{{ product.current_price }}</p>
+                    <a href="#" class="btn btn-outline-dark">Add to Cart</a>
                 </div>
             </div>
         </div>
