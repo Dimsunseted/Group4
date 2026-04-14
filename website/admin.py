@@ -32,7 +32,7 @@ def add_shop_items():
 
             file_name = secure_filename(file.filename)
 
-            file_path = f'./media/{file_name}'
+            file_path = file_name
 
             file.save(file_path)
 

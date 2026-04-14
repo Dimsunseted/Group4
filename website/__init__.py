@@ -35,10 +35,13 @@ def create_app():
     from .auth import auth
     from .admin import admin
     from .models import Customer, Cart, Product, Order
+    from .cart import cart
+    
     # urls for each section of the website
     app.register_blueprint(views, url_prefix='/') # localhost:5000/about-us
     app.register_blueprint(auth, url_prefix='/') # localhost:5000/auth/change-password
     app.register_blueprint(admin, url_prefix='/')
+    app.register_blueprint(cart, url_prefix='/')
 
     with app.app_context():
         create_database()
