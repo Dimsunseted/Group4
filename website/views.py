@@ -1,6 +1,8 @@
 # this is going to be where we keep all of the URL's to images
-from flask import Blueprint, render_template
-from website.models import Product
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_required, current_user
+from website.models import Product, Cart
+from . import db
 
 views = Blueprint('views', __name__)
 
@@ -44,3 +46,103 @@ def home():
 def shop():
     items = Product.query.all()
     return render_template('shop.html', products=items)
+
+@views.route('/shop')
+def shop():
+    search = request.args.get('search', '').strip()
+    sort   = request.args.get('sort', '')
+ 
+    query = Product.query
+ 
+    if search:
+        like = f'%{search}%'
+        query = query.filter(
+            Product.product_name.ilike(like)
+        )
+ 
+    if sort == 'price-asc':
+        query = query.order_by(Product.current_price.asc())
+    elif sort == 'price-desc':
+        query = query.order_by(Product.current_price.desc())
+    elif sort == 'avail-desc':
+        query = query.order_by(Product.in_stock.desc())
+    elif sort == 'avail-asc':
+        query = query.order_by(Product.in_stock.asc())
+ 
+    products = query.all()
+    return render_template('shop.html', products=products, search=search, sort=sort)
+
+
+@views.route('/add-to-cart/<int:product_id>')
+@login_required
+def add_to_cart(product_id):
+    product = Product.query.get_or_404(product_id)
+ 
+    if product.in_stock < 1:
+        flash(f'Sorry, {product.product_name} is out of stock.')
+        return redirect(url_for('views.shop'))
+ 
+    cart_item = Cart.query.filter_by(
+        customer_link=current_user.id,
+        product_link=product_id
+    ).first()
+ 
+    if cart_item:
+        if cart_item.quantity < product.in_stock:
+            cart_item.quantity += 1
+            flash(f'Added another {product.product_name} to your cart.')
+        else:
+            flash(f'You already have the maximum available quantity in your cart.')
+    else:
+        new_item = Cart(
+            quantity=1,
+            customer_link=current_user.id,
+            product_link=product_id
+        )
+        db.session.add(new_item)
+        flash(f'{product.product_name} added to cart!')
+ 
+    db.session.commit()
+    return redirect(url_for('views.shop'))
+ 
+@views.route('/cart')
+@login_required
+def cart():
+    cart_items = Cart.query.filter_by(customer_link=current_user.id).all()
+    subtotal = sum(item.product.current_price * item.quantity for item in cart_items)
+    tax      = round(subtotal * 0.0825, 2)
+    total    = round(subtotal + tax, 2)
+    return render_template('cart.html',
+                           cart_items=cart_items,
+                           subtotal=round(subtotal, 2),
+                           tax=tax,
+                           total=total)
+ 
+@views.route('/update-cart/<int:cart_id>/<action>')
+@login_required
+def update_cart(cart_id, action):
+    cart_item = Cart.query.get_or_404(cart_id)
+ 
+    if cart_item.customer_link != current_user.id:
+        flash('Unauthorized.')
+        return redirect(url_for('views.cart'))
+ 
+    if action == 'increase':
+        if cart_item.quantity < cart_item.product.in_stock:
+            cart_item.quantity += 1
+        else:
+            flash('No more stock available.')
+    elif action == 'decrease':
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+        else:
+            db.session.delete(cart_item)
+            db.session.commit()
+            return redirect(url_for('views.cart'))
+    elif action == 'remove':
+        db.session.delete(cart_item)
+        db.session.commit()
+        return redirect(url_for('views.cart'))
+ 
+    db.session.commit()
+    return redirect(url_for('views.cart'))
