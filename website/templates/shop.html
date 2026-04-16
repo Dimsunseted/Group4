@@ -74,7 +74,7 @@ html,body{background-color:#eaf6ff}
         </div>
         {% endfor %}
     </div>
-    <form method="GET" action="{{('shop.html')}}" id="shop-form" class="shop-controls">
+    <form method="GET" action="{{ url_for('views.shop') }}" id="shop-form" class="shop-controls">
     <div class="shop-search-wrap">
       <!-- magnifier icon -->
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -101,7 +101,7 @@ html,body{background-color:#eaf6ff}
     <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap">Search</button>
  
     {% if search or sort %}
-      <a href="{{ ('shop.html') }}" class="btn btn-outline-secondary btn-sm" style="white-space:nowrap">Clear</a>
+      <a href="{{ url_for('views.shop') }}" class="btn btn-outline-secondary btn-sm" style="white-space:nowrap">Clear</a>
     {% endif %}
  
     <span class="shop-result-count">{{ products | length }} product{{ 's' if products | length != 1 }}</span>
