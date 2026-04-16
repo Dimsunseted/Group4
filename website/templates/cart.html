@@ -103,7 +103,7 @@ html,body{background-color:#eaf6ff}
  
       <!-- Placeholder — checkout route can be wired up later -->
       <a href="#" class="checkout-btn">Proceed to Checkout</a>
-      <a href="{{ ('shop.html') }}" class="continue-btn">← Continue Shopping</a>
+      <a href="{{ url_for('views.shop') }}" class="continue-btn">← Continue Shopping</a>
     </div>
   </div>
  
@@ -115,7 +115,7 @@ html,body{background-color:#eaf6ff}
   <div class="icon">🛒</div>
   <h4>Your cart is empty</h4>
   <p>Looks like you haven't added anything yet.</p>
-  <a href="{{ ('shop.html' }}" class="btn btn-primary">Browse the Shop</a>
+  <a href="{{ url_for('views.shop') }}" class="btn btn-primary">Browse the Shop</a>
 </div>
  
 {% endif %}
