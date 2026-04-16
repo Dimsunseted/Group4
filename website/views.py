@@ -80,7 +80,7 @@ def add_to_cart(product_id):
  
     if product.in_stock < 1:
         flash(f'Sorry, {product.product_name} is out of stock.')
-        return redirect(url_for('views.shop'))
+        return redirect('shop.html')
  
     cart_item = Cart.query.filter_by(
         customer_link=current_user.id,
@@ -103,7 +103,7 @@ def add_to_cart(product_id):
         flash(f'{product.product_name} added to cart!')
  
     db.session.commit()
-    return redirect(url_for('views.shop'))
+    return redirect('shop.html')
  
 @views.route('/cart')
 @login_required
@@ -125,7 +125,7 @@ def update_cart(cart_id, action):
  
     if cart_item.customer_link != current_user.id:
         flash('Unauthorized.')
-        return redirect(url_for('views.cart'))
+        return redirect('cart.html')
  
     if action == 'increase':
         if cart_item.quantity < cart_item.product.in_stock:
@@ -138,11 +138,11 @@ def update_cart(cart_id, action):
         else:
             db.session.delete(cart_item)
             db.session.commit()
-            return redirect(url_for('views.cart'))
+            return redirect('cart.html'))
     elif action == 'remove':
         db.session.delete(cart_item)
         db.session.commit()
-        return redirect(url_for('views.cart'))
+        return redirect('cart.html')
  
     db.session.commit()
-    return redirect(url_for('views.cart'))
+    return redirect('cart.html')
