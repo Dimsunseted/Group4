@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+ 
+{% block title %}Your Cart{% endblock %}
+ 
+{% block content %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+html,body{background-color:#eaf6ff}
+ 
+.cart-wrap{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+@media(max-width:768px){.cart-wrap{grid-template-columns:1fr}}
+ 
+.cart-card{background:#fff;border-radius:.75rem;box-shadow:0 2px 14px rgba(0,0,0,.07);overflow:hidden;margin-bottom:1rem}
+.cart-item{display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid #e8f0f8}
+.cart-item:last-child{border-bottom:none}
+.cart-thumb{width:72px;height:72px;object-fit:cover;border-radius:.5rem;flex-shrink:0;background:#eaf6ff}
+.cart-info{flex:1;min-width:0}
+.cart-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;color:#1a2820;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cart-unit{font-size:12px;color:#6b8a9e}
+.cart-price{font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;color:#033860;white-space:nowrap}
+ 
+.qty-ctrl{display:flex;align-items:center;gap:6px}
+.qty-btn{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;border:1.5px solid #ccd8e8;background:#fff;font-size:16px;font-weight:600;color:#033860;text-decoration:none;line-height:1;transition:.15s}
+.qty-btn:hover{background:#eaf6ff;border-color:#033860}
+.qty-num{width:32px;text-align:center;font-weight:600;font-size:14px}
+.remove-btn{color:#c0392b;font-size:18px;text-decoration:none;padding:4px 6px;border-radius:4px;line-height:1;transition:.15s}
+.remove-btn:hover{background:#fdecea}
+ 
+.summary-card{background:#fff;border-radius:.75rem;box-shadow:0 2px 14px rgba(0,0,0,.07);padding:22px}
+.summary-card h4{font-family:'Poppins',sans-serif;font-weight:600;margin-bottom:16px}
+.sum-row{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px solid #eef2f8}
+.sum-row:last-of-type{border-bottom:none}
+.sum-row.total{font-size:17px;font-weight:700;color:#033860;border-top:2px solid #033860;border-bottom:none;padding-top:10px;margin-top:6px}
+.checkout-btn{display:block;width:100%;background:#033860;color:#fff;border:none;border-radius:.5rem;padding:12px;font-size:15px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;text-align:center;text-decoration:none;margin-top:16px;transition:.2s}
+.checkout-btn:hover{background:#022a50;color:#fff}
+.continue-btn{display:block;text-align:center;margin-top:10px;font-size:13px;color:#6b8a9e;text-decoration:none}
+.continue-btn:hover{color:#033860}
+ 
+.empty-cart{text-align:center;padding:70px 20px;background:#fff;border-radius:.75rem;box-shadow:0 2px 14px rgba(0,0,0,.07)}
+.empty-cart .icon{font-size:56px;margin-bottom:14px}
+.empty-cart h4{font-family:'Poppins',sans-serif;font-weight:600;color:#1a2820;margin-bottom:.5rem}
+.empty-cart p{color:#6b8a9e;margin-bottom:1.25rem}
+</style>
+ 
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+  <h2 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.75rem;color:#1a2820;margin:0">
+    Your Cart
+  </h2>
+  {% if cart_items %}
+    <span style="font-size:13px;color:#6b8a9e">{{ cart_items | length }} item{{ 's' if cart_items | length != 1 }}</span>
+  {% endif %}
+</div>
+ 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+ 
+{% if cart_items %}
+ 
+<div class="cart-wrap">
+ 
+  <div>
+    <div class="cart-card">
+      {% for item in cart_items %}
+      <div class="cart-item">
+        <img src="{{ item.product.product_picture }}" class="cart-thumb" alt="{{ item.product.product_name }}">
+ 
+        <div class="cart-info">
+          <div class="cart-name">{{ item.product.product_name }}</div>
+          <div class="cart-unit">${{ "%.2f"|format(item.product.current_price) }} each</div>
+        </div>
+ 
+        <div class="qty-ctrl">
+          <a href="{{url_for('views.update_cart', cart_id=item.id, action='decrease') }}" class="qty-btn" title="Decrease">−</a>
+          <span class="qty-num">{{ item.quantity }}</span>
+          <a href="{{ url_for('views.update_cart', cart_id=item.id, action='increase') }}" class="qty-btn" title="Increase">+</a>
+        </div>
+ 
+        <div class="cart-price">${{ "%.2f"|format(item.product.current_price * item.quantity) }}</div>
+ 
+        <a href="{{ url_for('views.update_cart', cart_id=item.id, action='remove') }}"
+           class="remove-btn" title="Remove item"
+           onclick="return confirm('Remove {{ item.product.product_name }} from cart?')">×</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+ 
+  <div>
+    <div class="summary-card">
+      <h4>Order Summary</h4>
+ 
+      <div class="sum-row"><span>Subtotal</span><span>${{ "%.2f"|format(subtotal) }}</span></div>
+      <div class="sum-row"><span>Tax (8.25%)</span><span>${{ "%.2f"|format(tax) }}</span></div>
+      <div class="sum-row total"><span>Total</span><span>${{ "%.2f"|format(total) }}</span></div>
+ 
+      <!-- Placeholder — checkout route can be wired up later -->
+      <a href="#" class="checkout-btn">Proceed to Checkout</a>
+      <a href="{{ ('shop.html') }}" class="continue-btn">← Continue Shopping</a>
+    </div>
+  </div>
+ 
+</div>
+ 
+{% else %}
+ 
+<div class="empty-cart">
+  <div class="icon">🛒</div>
+  <h4>Your cart is empty</h4>
+  <p>Looks like you haven't added anything yet.</p>
+  <a href="{{ ('shop.html' }}" class="btn btn-primary">Browse the Shop</a>
+</div>
+ 
+{% endif %}
+ 
+{% endblock %}
+ 
