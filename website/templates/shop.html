@@ -6,6 +6,26 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 html,body{background-color:#eaf6ff}
+    .shop-controls{
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+  background:#fff;border-radius:.75rem;padding:14px 18px;
+  box-shadow:0 2px 12px rgba(3,56,96,.08);margin-bottom:1.75rem;
+}
+.shop-search-wrap{position:relative;flex:1;min-width:200px}
+.shop-search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#90a8bb;pointer-events:none}
+#shop-search{
+  width:100%;padding:9px 12px 9px 38px;border:1.5px solid #d0dde8;
+  border-radius:.5rem;font-size:14px;font-family:'Poppins',sans-serif;outline:none;transition:.2s;
+}
+#shop-search:focus{border-color:#033860;box-shadow:0 0 0 3px rgba(3,56,96,.1)}
+.shop-sort{
+  padding:9px 14px;border:1.5px solid #d0dde8;border-radius:.5rem;
+  font-size:13px;font-family:'Poppins',sans-serif;outline:none;
+  color:#033860;background:#fff;cursor:pointer;transition:.2s;
+}
+.shop-sort:focus{border-color:#033860}
+.shop-result-count{font-size:13px;color:#6b8a9e;white-space:nowrap}
+ 
 .shop-header-section{background-color:#551918;padding:1rem 0;margin-bottom:0}
 .shop-header-inner{max-width:1320px;margin:0 auto;padding:0 12px;display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .shop-page-title{font-family:'Poppins',sans-serif;font-weight:600;font-size:clamp(1.5rem,4vw,2rem);color:#fff;margin:0;letter-spacing:-.02em}
@@ -26,7 +46,12 @@ html,body{background-color:#eaf6ff}
 <section class="shop-header-section" aria-label="Shop heading">
     <div class="shop-header-inner">
         <h1 class="shop-page-title">Shop</h1>
-        <a href="#" class="shop-cart-btn">Cart</a>
+        <a href="#" class="shop-cart-btn"> 🛒 Cart
+         {% if current_user.is_authenticated %}
+        {% set count = current_user.cart_items | length %}
+        {% if count > 0 %}({{ count }}){% endif %}
+      {% endif %}
+        </a>
     </div>
 </section>
 
@@ -49,5 +74,60 @@ html,body{background-color:#eaf6ff}
         </div>
         {% endfor %}
     </div>
+    <form method="GET" action="{{ url_for('views.shop')}}" id="shop-form" class="shop-controls">
+    <div class="shop-search-wrap">
+      <!-- magnifier icon -->
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        type="text"
+        id="shop-search"
+        name="search"
+        placeholder="Search by name or description…"
+        value="{{ search }}"
+        autocomplete="off"
+      >
+    </div>
+ 
+    <select name="sort" class="shop-sort" onchange="document.getElementById('shop-form').submit()">
+      <option value=""          {% if sort == ''           %}selected{% endif %}>Sort: Default</option>
+      <option value="price-asc" {% if sort == 'price-asc'  %}selected{% endif %}>Price: Low → High</option>
+      <option value="price-desc"{% if sort == 'price-desc' %}selected{% endif %}>Price: High → Low</option>
+      <option value="avail-desc"{% if sort == 'avail-desc' %}selected{% endif %}>Stock: Most first</option>
+      <option value="avail-asc" {% if sort == 'avail-asc'  %}selected{% endif %}>Stock: Least first</option>
+    </select>
+ 
+    <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap">Search</button>
+ 
+    {% if search or sort %}
+      <a href="{{ url_for('views.shop') }}" class="btn btn-outline-secondary btn-sm" style="white-space:nowrap">Clear</a>
+    {% endif %}
+ 
+    <span class="shop-result-count">{{ products | length }} product{{ 's' if products | length != 1 }}</span>
+  </form>
+     {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 </section>
+
+
+<script>
+(function(){
+  const input = document.getElementById('shop-search');
+  const form  = document.getElementById('shop-form');
+  let timer;
+  input.addEventListener('input', function(){
+    clearTimeout(timer);
+    timer = setTimeout(function(){ form.submit(); }, 400);
+  });
+})();
+</script>
 {% endblock %}
