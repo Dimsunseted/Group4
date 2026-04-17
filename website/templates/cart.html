@@ -51,7 +51,7 @@
                     </tbody>
                 </table>
                 <div class="text-end">
-                    <h4>Total: ${{ total_price }}</h4>
+                    <h4>Total: ${{  "%.2f"|format(total_price) }}</h4>
                     <a href="/checkout" class="btn btn-success mt-2">Checkout</a>
                 </div>
             {% else %}

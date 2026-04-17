@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <h2>Checkout</h2>
+
+    <!-- item summary -->
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.product_name }}</td>
+                <td>${{ item.product.current_price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.product.current_price * item.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- discount code -->
+    <form method="POST" class="mt-4">
+        <label>Discount Code:</label>
+        <input type="text" name="discount_code" value="{{ discount_code }}">
+        <button class="btn btn-primary btn-sm">Apply</button>
+    </form>
+
+    <!-- Price info -->
+    <div class="mt-4 text-end">
+        <p><strong>Subtotal:</strong> ${{ subtotal }}</p>
+        <p><strong>Tax (8.25%):</strong> ${{ tax }}</p>
+        <p>
+        <strong>Discount:</strong>
+        {% if discount > 0 %}
+            -${{ "%.2f"|format(discount) }}
+        {% else %}
+            $0.00
+        {% endif %}
+        </p>
+        <h4><strong>Total:</strong> 
+            ${{ "%.2f"|format(total) }}
+        </h4>
+    </div>
+
+    <!-- PLACE ORDER -->
+    <div class="text-end mt-3">
+        <a href="/place-order" class="btn btn-success">Place Order</a>
+    </div>
+</div>
+
+{% endblock %}
