@@ -74,3 +74,13 @@ class Order(db.Model):
 
     def __str__(self):
         return '<Order %r>' % self.id
+    
+
+class DiscountCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), unique=True, nullable=False)
+    percentage = db.Column(db.Float, nullable=False)
+    active = db.Column(db.Boolean, default=True)
+
+    def __str__(self):
+        return f'<Discount {self.code}>'
